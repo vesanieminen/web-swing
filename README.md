@@ -3,6 +3,8 @@
 A browser-based 3D Spider-Man style swinging game. Shoot webs from rooftop to
 rooftop, chain combos, and see how far you can fly over a neon night city.
 
+**▶ Live: https://vesanieminen.github.io/web-swing/**
+
 No build step, no assets, no dependencies to install — everything (city, hero,
 textures, audio) is generated procedurally in code. Three.js is loaded from a
 CDN via an import map.
@@ -19,6 +21,8 @@ python3 -m http.server 8000
 ```
 
 Any static file server works (`npx serve`, `caddy file-server`, etc.).
+
+Pushes to `main` are automatically published to GitHub Pages at the URL above.
 
 ## How to play
 
