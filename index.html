@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Web Swing — Spider City Flyer</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🕷️</text></svg>">
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <div id="hud" class="hidden">
+    <div class="hud-block hud-left">
+      <div class="hud-label">SCORE</div>
+      <div class="hud-value" id="score">0</div>
+      <div class="hud-label">DISTANCE</div>
+      <div class="hud-mid"><span id="dist">0m</span></div>
+      <div class="hearts" id="hearts"></div>
+    </div>
+    <div class="hud-block hud-right">
+      <div class="hud-value" id="speed">0</div>
+      <div class="hud-label">KM/H</div>
+      <div class="hud-mini">M sound · P pause · R cut web</div>
+    </div>
+  </div>
+
+  <div id="reticle"></div>
+  <div id="toast" class="toast"></div>
+  <div id="flash"></div>
+
+  <div id="menu" class="overlay">
+    <div class="panel">
+      <div class="spider-badge">🕷️</div>
+      <h1 class="title">WEB&nbsp;SWING</h1>
+      <p class="tag">A Spider-Man skyline flyer — from rooftop to rooftop</p>
+      <ul class="controls">
+        <li><b>Hold</b> <kbd>Click</kbd> or <kbd>Space</kbd> — shoot &amp; hold a web</li>
+        <li><b>Move</b> the mouse (or <kbd>A</kbd> / <kbd>D</kbd>) — steer the swing</li>
+        <li><b>Mouse up / down</b> — pump the swing higher or lower</li>
+        <li><b>Scroll</b> — shorten / lengthen the web · <kbd>R</kbd> cuts it</li>
+        <li><b>P</b> pause · <b>M</b> mute</li>
+      </ul>
+      <p class="best">BEST&nbsp;<span id="bestMenu">0</span></p>
+      <div class="cta">CLICK or press <kbd>ENTER</kbd> to start swinging</div>
+    </div>
+  </div>
+
+  <div id="gameover" class="overlay hidden">
+    <div class="panel">
+      <h1 class="title small">WIPED OUT</h1>
+      <p class="tag">The web snapped… and so did you.</p>
+      <div class="stats">
+        <div><span class="stat">DISTANCE</span><span id="finalDist">0</span></div>
+        <div><span class="stat">SCORE</span><span id="finalScore">0</span></div>
+        <div><span class="stat">BEST</span><span id="bestOver">0</span></div>
+      </div>
+      <div class="cta">CLICK or press <kbd>ENTER</kbd> to swing again</div>
+    </div>
+  </div>
+
+  <div id="paused" class="overlay hidden">
+    <div class="panel tight">
+      <h1 class="title small">PAUSED</h1>
+      <div class="cta">press <kbd>P</kbd> to keep swinging</div>
+    </div>
+  </div>
+
+  <div id="loadError" class="overlay hidden">
+    <div class="panel tight">
+      <h1 class="title small">COULDN'T LOAD THE 3D ENGINE</h1>
+      <p class="tag">This game streams three.js from a CDN — check your internet connection and refresh.</p>
+    </div>
+  </div>
+
+  <script>
+    // if three.js fails to stream from the CDN, say so instead of hanging
+    setTimeout(function () {
+      if (!window.__webswingBooted) document.getElementById("loadError").classList.remove("hidden");
+    }, 7000);
+  </script>
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+      }
+    }
+  </script>
+  <script type="module" src="main.js"></script>
+</body>
+</html>

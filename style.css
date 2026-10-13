@@ -1,0 +1,168 @@
+:root{
+  --red:#e3243b;
+  --red-dark:#8f1020;
+  --blue:#1d6fd1;
+  --blue-dark:#0d3a72;
+  --ink:#eef4ff;
+  --panel:rgba(8,14,26,.72);
+  --mono:ui-monospace,"Cascadia Code","JetBrains Mono",Menlo,Consolas,monospace;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden;background:#060a14}
+body{font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink)}
+#game{position:fixed;inset:0;width:100vw;height:100vh;display:block;z-index:0;touch-action:none}
+
+.hidden{display:none !important}
+
+/* ---------- HUD ---------- */
+#hud{
+  position:fixed;inset:16px 20px auto 20px;z-index:5;
+  display:flex;justify-content:space-between;align-items:flex-start;
+  pointer-events:none;user-select:none;
+}
+.hud-block{
+  background:var(--panel);backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.08);border-radius:14px;
+  padding:10px 16px;box-shadow:0 8px 24px rgba(0,0,0,.35);
+}
+.hud-left{min-width:150px}
+.hud-right{text-align:right;min-width:130px}
+.hud-label{
+  font-size:10px;letter-spacing:.22em;color:#8fa3c8;font-weight:700;
+}
+.hud-value{
+  font-family:var(--mono);font-size:30px;font-weight:700;line-height:1.05;
+  color:#fff;text-shadow:0 0 18px rgba(227,36,59,.55);
+}
+.hud-mid{
+  font-family:var(--mono);font-size:15px;font-weight:700;color:#9fd0ff;
+  letter-spacing:.06em;margin-top:2px;
+}
+.hud-mini{margin-top:6px;font-size:10px;color:#7488ad;letter-spacing:.06em}
+.hearts{margin-top:8px;display:flex;gap:5px}
+.heart{
+  width:20px;height:20px;position:relative;
+  transition:transform .2s ease, filter .2s ease;
+}
+.heart::before,.heart::after{
+  content:"";position:absolute;top:0;width:11px;height:17px;border-radius:11px 11px 0 0;
+  background:var(--red);
+}
+.heart::before{left:10px;transform:rotate(-45deg);transform-origin:0 100%}
+.heart::after{left:0;transform:rotate(45deg);transform-origin:100% 100%}
+.heart.lost{filter:grayscale(1) brightness(.35);transform:scale(.82)}
+
+/* cursor reticle */
+#reticle{
+  position:fixed;z-index:6;pointer-events:none;
+  width:26px;height:26px;margin:-13px 0 0 -13px;border-radius:50%;
+  border:2px solid rgba(255,255,255,.85);
+  box-shadow:0 0 0 4px rgba(0,0,0,.25), 0 0 14px rgba(227,36,59,.7);
+  transition:transform .08s ease, border-color .12s ease;
+}
+#reticle::after{
+  content:"";position:absolute;inset:10px;border-radius:50%;
+  background:var(--red);
+}
+#reticle.hot{
+  border-color:var(--red);
+  transform:scale(1.35);
+  box-shadow:0 0 0 5px rgba(227,36,59,.28), 0 0 22px rgba(227,36,59,.95);
+}
+
+/* hit flash */
+#flash{
+  position:fixed;inset:0;z-index:7;pointer-events:none;opacity:0;
+  background:radial-gradient(120% 120% at 50% 60%, rgba(227,36,59,0) 35%, rgba(227,36,59,.5) 78%, rgba(140,10,25,.75) 100%);
+}
+
+/* toast */
+.toast{
+  position:fixed;left:50%;bottom:9%;transform:translateX(-50%) translateY(14px);
+  z-index:8;pointer-events:none;opacity:0;
+  background:linear-gradient(135deg,var(--red) 0 50%,var(--blue-dark) 50% 100%);
+  padding:12px 26px;border-radius:999px;font-weight:800;letter-spacing:.04em;
+  box-shadow:0 10px 30px rgba(0,0,0,.5), inset 0 0 0 1px rgba(255,255,255,.18);
+  transition:opacity .25s ease, transform .25s ease;
+  white-space:nowrap;
+}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast .sub{
+  display:block;font-size:10px;font-weight:700;letter-spacing:.3em;opacity:.8;margin-top:2px;
+}
+
+/* ---------- overlays ---------- */
+.overlay{
+  position:fixed;inset:0;z-index:10;
+  display:flex;align-items:center;justify-content:center;
+  background:radial-gradient(90% 90% at 50% 45%, rgba(10,16,30,.62), rgba(4,7,14,.88));
+  backdrop-filter:blur(6px);
+  animation:fade .35s ease both;
+}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+.panel{
+  width:min(560px, 92vw);text-align:center;
+  background:linear-gradient(180deg, rgba(16,26,46,.92), rgba(9,14,26,.94));
+  border:1px solid rgba(120,150,210,.25);
+  border-radius:22px;padding:38px 42px 34px;
+  box-shadow:0 30px 90px rgba(0,0,0,.65), inset 0 1px 0 rgba(255,255,255,.06);
+  position:relative;overflow:hidden;
+}
+/* red/blue diagonal slash behind the panel, like the spider emblem */
+.panel::before{
+  content:"";position:absolute;inset:-40%;
+  background:
+    linear-gradient(115deg, transparent 46.5%, rgba(227,36,59,.28) 46.5% 53.5%, transparent 53.5%),
+    linear-gradient(115deg, transparent 55.5%, rgba(29,111,209,.22) 55.5% 62.5%, transparent 62.5%);
+  transform:translateY(8%);
+  pointer-events:none;
+}
+.spider-badge{font-size:46px;line-height:1;margin-bottom:6px;filter:drop-shadow(0 6px 18px rgba(227,36,59,.5))}
+.title{
+  font-size:46px;font-weight:900;letter-spacing:.08em;
+  background:linear-gradient(180deg,#fff 30%,#c9d8f5 100%);
+  -webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:0 10px 40px rgba(29,111,209,.35);
+}
+.title.small{font-size:30px}
+.tag{margin-top:8px;color:#93a7cc;font-size:14.5px}
+.controls{
+  list-style:none;margin:22px auto 6px;max-width:430px;text-align:left;
+  display:flex;flex-direction:column;gap:9px;
+}
+.controls li{
+  font-size:13.5px;color:#c6d4ef;background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.07);
+  padding:8px 12px;border-radius:10px;
+}
+kbd{
+  font-family:var(--mono);font-size:11px;color:#eaf1ff;
+  background:#20304f;border:1px solid #3b5583;border-bottom-width:2px;
+  padding:1px 7px;border-radius:6px;margin:0 2px;
+}
+.best{margin-top:18px;font-size:13px;letter-spacing:.18em;color:#8fa3c8;font-weight:700}
+.best span,.stats span:not(.stat){color:#ffd75e;font-family:var(--mono);font-size:16px}
+.cta{
+  margin-top:24px;font-weight:700;font-size:14.5px;letter-spacing:.05em;
+  animation:pulse 1.6s ease-in-out infinite;
+}
+@keyframes pulse{0%,100%{opacity:.65}50%{opacity:1}}
+.stats{
+  display:flex;justify-content:center;gap:34px;margin-top:22px;
+}
+.stats > div{display:flex;flex-direction:column;gap:6px}
+.stat{font-size:10px;letter-spacing:.25em;color:#8fa3c8;font-weight:700}
+.panel .stats span:not(.stat){font-size:28px;font-weight:700;text-align:center}
+
+/* subtle vignette always on */
+body::after{
+  content:"";position:fixed;inset:0;z-index:4;pointer-events:none;
+  background:radial-gradient(130% 100% at 50% 50%, transparent 62%, rgba(3,6,12,.5) 100%);
+}
+
+@media (max-width:560px){
+  .title{font-size:34px}
+  .panel{padding:28px 22px}
+  .controls{max-width:none}
+  .hud-value{font-size:22px}
+}
